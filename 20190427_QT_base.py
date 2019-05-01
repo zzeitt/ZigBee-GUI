@@ -1,9 +1,10 @@
 import sys
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap, QPainter
-from PyQt5.QtWidgets import (QWidget, QLabel,
-                             QSpinBox, QGroupBox,
-                             QVBoxLayout, QApplication,
+from PyQt5.QtWidgets import (QWidget, QLabel, QSpinBox,
+                             QGroupBox, QPushButton,
+                             QVBoxLayout, QGridLayout,
+                             QApplication, QLineEdit,
                              QDesktopWidget)
 
 
@@ -26,28 +27,43 @@ class MyWinMap(QWidget):
         '''地图显示控件'''
         self.lb_map = QLabel('正在加载地图……')
         self.lb_map.setAlignment(Qt.AlignCenter)
-        '''阈值调节区'''
-        # self.lb_thre = QLabel('设定阈值')
+        '''设定节点及阈值区'''
+        self.bt_mark_begin = QPushButton('开始标记')
+        self.bt_mark_end = QPushButton('结束标记')
         self.sp_thre = QSpinBox()
         self.sp_thre.setRange(0, 10)  # 设置上界和下界
+        '''数据显示区'''
 
     def initLayout(self):
+        '''箱组声明'''
         self.gpbx_map = QGroupBox('地图', self)
-        self.gpbx_thre = QGroupBox('阈值调节', self)
+        self.gpbx_mark_and_thre = QGroupBox('设定节点及阈值', self)
+        self.gpbx_data = QGroupBox('数据', self)
         '''箱组布局类型'''
         self.lot_v_map = QVBoxLayout()
-        self.lot_v_thre = QVBoxLayout()
+        self.lot_g_mark_and_thre = QGridLayout()
+        self.lot_g_data = QGridLayout()
         self.lot_v_all = QVBoxLayout()
         '''箱组map布局设置'''
         self.lot_v_map.addWidget(self.lb_map, alignment=Qt.AlignHCenter)
         self.gpbx_map.setLayout(self.lot_v_map)
-        '''箱组thre布局设置'''
-        # self.lot_v_thre.addWidget(self.lb_thre, alignment=Qt.AlignHCenter)
-        self.lot_v_thre.addWidget(self.sp_thre, alignment=Qt.AlignHCenter)
-        self.gpbx_thre.setLayout(self.lot_v_thre)
+        '''箱组mark and thre布局设置'''
+        # self.lot_g_mark_and_thre.setColumnMinimumWidth()
+        self.lot_g_mark_and_thre.addWidget(self.bt_mark_begin, 0, 0, 2, 1)
+        self.lot_g_mark_and_thre.addWidget(self.bt_mark_end, 0, 3, 2, 1)
+        self.lot_g_mark_and_thre.addWidget(self.sp_thre, 0, 6, 2, 1)
+        self.gpbx_mark_and_thre.setLayout(self.lot_g_mark_and_thre)
+        '''箱组data布局设置'''
+        for i in range(0, 8):
+            le_temp = QLineEdit('*')
+            le_temp.setReadOnly(True)
+            le_temp.setAlignment(Qt.AlignHCenter)
+            self.lot_g_data.addWidget(le_temp, 0, i)
+        self.gpbx_data.setLayout(self.lot_g_data)
         '''总布局设置'''
         self.lot_v_all.addWidget(self.gpbx_map)
-        self.lot_v_all.addWidget(self.gpbx_thre)
+        self.lot_v_all.addWidget(self.gpbx_mark_and_thre)
+        self.lot_v_all.addWidget(self.gpbx_data)
         self.setLayout(self.lot_v_all)
 
     def initWindow(self, w, h):
@@ -91,7 +107,7 @@ class MyWinMap(QWidget):
                 Qt.SmoothTransformation)
             self.lb_map.setPixmap(self.pixmap_map)
             '''实现居中一次'''
-            if self.i_pixmap_count < 2:  # 第一帧加载空label，第二帧加载地图
+            if self.i_pixmap_count < 5:  # 相当于延时处理
                 w = self.width()
                 h = self.height()
                 self.moveToCenter(w, h)
@@ -112,3 +128,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     win_map = MyWinMap()
     sys.exit(app.exec_())
+
