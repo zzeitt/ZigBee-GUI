@@ -237,7 +237,7 @@ class MyWinMap(QWidget):
         self.data_zigbee_list = []
         # 初始化串口
         self.ser_data = QSerialPort(
-            'COM3',
+            STR_COM,
             baudRate=QSerialPort.Baud115200,
             readyRead=self.receive)
         self.ser_data.open(QIODevice.ReadWrite)
