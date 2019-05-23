@@ -251,7 +251,7 @@ class MyWinMap(QWidget):
         _data = self.ser_data.readLine().data()  # 读取数据
         if _data != b'':
             self.data_zigbee_list = []  # 清空数据
-            self.data = _data[0:16].decode("gbk")
+            self.data = _data[0:2*NODE_NUM].decode("gbk")
             # 存储数据
             for i in range(len(self.data)//2):
                 # 每两位存储，用tuple存储，只读
